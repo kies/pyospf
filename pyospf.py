@@ -3,17 +3,6 @@
 import sys
 import copy
 
-g = {   'TC-A':{'TC':10},
-        'TC': {'LX': 40, 'JA': 100}, 
-        'LX': {'TC': 40, 'ZJM': 120}, 
-        'ZJM': {'LX': 120, 'YF': 40}, 
-        #'YF': {'ZJM': 40, 'JA': 100}, 
-        'YF': {'ZJM': 40, 'JA': 100, 'YF-A':10}, 
-        'JA': {'TC': 100, 'YF': 100},
-        'YF-A':{'YF':10},
-    }
-
-
 
 def spf(g, v):
     A_list = []
@@ -106,9 +95,19 @@ def spf(g, v):
 
 
 if __name__ == "__main__":
+    g = {   
+            'A':{'B':10},
+            'B': {'C': 40, 'F': 100}, 
+            'C': {'B': 40, 'D': 120}, 
+            'D': {'C': 120, 'E': 40}, 
+            'E': {'D': 40, 'F': 100, 'G':10}, 
+            'F': {'B': 100, 'E': 100},
+            'G': {'E':10},
+        }
+
     #print g
 
-    path, ob = spf(g, 'TC-A')
+    path, ob = spf(g, 'A')
 
     import json
     print json.dumps(path)
