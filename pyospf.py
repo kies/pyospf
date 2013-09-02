@@ -9,7 +9,7 @@ import copy
     Graph:
         {
             'A' : {
-                    'B':[{'s':sif, 'e':eif, 'mt':mt},{},{}],
+                    'B':[{'s':sif, 'e':eif, 'sip':sip, 'eip':eip, 'mt':mt},{},{}],
                     'C':[{},{}],
                     ......
                   }
@@ -18,7 +18,7 @@ import copy
     Path:
         {
             'path' : [
-                        {'A':[sif, eif]},{'B':[sif, eif]},{'D':[sif,eif]}   
+                        {'A':[sif:sip]},{'B':[eif:eip, sif:sip]},{'D':[eif:eip]}   
                         ]
             'mt' : mt
         }
@@ -59,12 +59,18 @@ def spf(g, v):
                 path_dict['mt'] = p['mt']
                 start = {}
                 start[v0] = []
+                start_small_dict = {}
+                start_small_dict[p['s']] = p['sip']
+                start[v0].append(start_small_dict)
                 path_dict['path'].append(start)
+
                 end = {}
                 end[e] = []
-                end[e].append(p['s'])
-                end[e].append(p['e'])
+                end_small_dict = {}
+                end_small_dict[p['e']] = p['eip']
+                end[e].append(end_small_dict)
                 path_dict['path'].append(end)
+
                 waited_list.append(path_dict)
 
     """
@@ -111,10 +117,14 @@ def spf(g, v):
             if e not in A_list:
                 for p in vec_dict[e]:
                     path_tmp = copy.deepcopy(v)  # must use deepcopy
+                    start_small_dict = {}
+                    start_small_dict[p['s']] = p['sip']
+                    path_tmp['path'][-1].values()[0].append(start_small_dict)
                     end = {}
                     end[e] = []
-                    end[e].append(p['s'])
-                    end[e].append(p['e'])
+                    end_small_dict = {}
+                    end_small_dict[p['e']] = p['eip']
+                    end[e].append(end_small_dict)
                     path_tmp['path'].append(end)
                     path_tmp['mt'] += p['mt']
                     waited_list.append(path_tmp)
@@ -133,11 +143,11 @@ def spf(g, v):
 
 if __name__ == "__main__":
     g = {   
-            'B': {'C': [{'s':'1/2', 'e':'1/1', 'mt':40}, {'s':'2/1', 'e':'2/1', 'mt':40}], 'F': [{'s':'1/1', 'e':'1/2', 'mt': 100}]}, 
-            'C': {'B': [{'s': '1/1', 'e':'1/2', 'mt':40}], 'D': [{'s':'1/2', 'e':'1/1', 'mt': 120}]}, 
-            'D': {'C': [{'s': '1/1', 'e': '1/2', 'mt':120}], 'E': [{'s': '1/2', 'e': '1/1', 'mt': 40}]}, 
-            'E': {'D': [{'s': '1/1', 'e': '1/2', 'mt':40}], 'F': [{'s': '1/2', 'e': '1/1', 'mt': 100}]}, 
-            'F': {'B': [{'s':'1/2', 'e':'1/1', 'mt':100}], 'E': [{'s':'1/1', 'e':'1/2', 'mt': 100}]},
+            'B': {'C': [{'s':'1/2', 'e':'1/1', 'sip':'10.10.10.1', 'eip':'10.10.10.2', 'mt':40}], 'F': [{'s':'1/1', 'e':'1/2', 'sip':'10.10.15.2', 'eip':'10.10.15.1', 'mt': 100}]}, 
+            'C': {'B': [{'s': '1/1', 'e':'1/2', 'sip':'10.10.10.2', 'eip':'10.10.10.1', 'mt':40}], 'D': [{'s':'1/2', 'e':'1/1', 'sip':'10.10.12.1', 'eip':'10.10.12.2', 'mt': 120}]}, 
+            'D': {'C': [{'s': '1/1', 'e': '1/2', 'sip':'10.10.12.2', 'eip':'10.10.12.1', 'mt':120}], 'E': [{'s': '1/2', 'e': '1/1', 'sip':'10.10.13.1', 'eip':'10.10.13.2', 'mt': 40}]}, 
+            'E': {'D': [{'s': '1/1', 'e': '1/2', 'sip':'10.10.13.2', 'eip':'10.10.13.1', 'mt':40}], 'F': [{'s': '1/2', 'e': '1/1', 'sip':'10.10.14.1', 'eip':'10.10.14.2', 'mt': 100}]}, 
+            'F': {'B': [{'s':'1/2', 'e':'1/1', 'sip':'10.10.15.1', 'eip':'10.10.15.2', 'mt':100}], 'E': [{'s':'1/1', 'e':'1/2', 'sip':'10.10.14.2', 'eip':'10.10.14.1', 'mt': 100}]},
         }
 
     #print g
