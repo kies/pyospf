@@ -89,13 +89,16 @@ def spf(g, v):
         waited_list.remove(v)
 
         # shortest path
+        is_shortest = 1
         for spath in selected_list:
             if spath['path'][0].keys()[0] == v['path'][0].keys()[0] and spath['path'][-1].keys()[0] == v['path'][-1].keys()[0]:
                 if v['mt'] > spath['mt']:
+                    is_shortest = 0
                     obsoleted_list.append(v)
                     continue
 
-        selected_list.append(v)
+        if is_shortest == 1:
+            selected_list.append(v)
 
         v0 = v['path'][-1].keys()[0]
         #print "v0: %s" % v0
