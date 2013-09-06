@@ -33,7 +33,7 @@ def spf(g, v):
     if v in g:
         A_list.append(v)
     else:
-        raise ValueError("Not found")
+        raise ValueError("%s Not found" % v)
 
     for k in g:
         if k != v:
@@ -112,7 +112,10 @@ def spf(g, v):
         if v0 in B_list:
             B_list.remove(v0)
 
-        vec_dict = g[v0]
+        try:
+            vec_dict = g[v0]
+        except Exception, e:
+            continue
         for e in vec_dict:
             if e not in A_list:
                 for p in vec_dict[e]:
